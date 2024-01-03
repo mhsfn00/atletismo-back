@@ -15,13 +15,18 @@ async function start () { // Function so we dont need to rewrite the database co
     const db = client.db('atletismo'); // use atletismo (database) 
     
     app.get('/api/posts', async (req, res) => {
-        const posts = await db.collection('posts').find({}).toArray(); // Find all in collection "posts" (looks like an array of objects)
+        const posts = await db.collection('posts').find({}, { limit: 5 }).toArray(); // Collection posts contains all posts not tagged as mainPost
+        const mainPost = await db.collection('mainPost').findOne({}); // Finds the only main post, its own collection (mainPost), capped to 1 object
+        posts.unshift(mainPost); // mainPost in the first position of posts
         res.json(posts);
     })
     
     app.get('/api/post/:postId', async (req, res) => {
         const postId = req.params.postId; // postId from request
-        const post = await db.collection('posts').findOne({ id: postId }); // id in database | postId from request
+
+        const post = await db.collection('mainPost').findOne({ id: postId }) ? // Checking for the post id in the mainPost collection first
+            await db.collection('mainPost').findOne({ id: postId }) : await db.collection('posts').findOne({ id: postId });  
+
         res.json(post);
     });
     
