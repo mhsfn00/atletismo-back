@@ -1,6 +1,7 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
-import 'dotenv/config'
+import 'dotenv/config';
+
 
 async function start () { // Function so we dont need to rewrite the database connection code for every request
     const app = express();
@@ -52,4 +53,4 @@ async function start () { // Function so we dont need to rewrite the database co
     });
 }
 
-start(); // "starting the backend"
+start(); // starting the backend
