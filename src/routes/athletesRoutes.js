@@ -6,6 +6,6 @@ router.get('/', async (req, res) => {
     const athletes = await db.collection('athletes').find({}).toArray();
 
     res.json(athletes);
-})
+});
 
 module.exports = router;
