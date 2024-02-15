@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     const db = req.app.get('db');
-    const athletes = await db.collection('athletes').find({}).toArray();
+    const athletes = await db.collection('roster').find({}).toArray();
 
     res.json(athletes);
 });
