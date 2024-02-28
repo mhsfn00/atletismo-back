@@ -8,4 +8,10 @@ router.get('/', async (req, res) => {
     res.json(athletes);
 });
 
+router.post('/addAthletes', async (req, res) => {
+    const db = req.app.get('db');
+    console.log(req.body);
+    res.send(true);
+})
+
 module.exports = router;
