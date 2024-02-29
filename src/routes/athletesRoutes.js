@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/:year', async (req, res) => {
     const db = req.app.get('db');
-    const athletes = await db.collection('roster').find({}).toArray();
+    const rosterYear = req.params.year;
+    const athletes = await db.collection(`roster${rosterYear}`).find({}).toArray();
 
     res.json(athletes);
 });
 
-router.post('/addAthletes', async (req, res) => {
+router.post('/addAthletes/:year', async (req, res) => {
     const db = req.app.get('db');
-    console.log(req.body);
+    const rosterYear = req.params.year;
+    const newAthletes = req.body;
+
     res.send(true);
 })
 
