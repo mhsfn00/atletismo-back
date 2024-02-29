@@ -14,6 +14,17 @@ router.post('/addAthletes/:year', async (req, res) => {
     const rosterYear = req.params.year;
     const newAthletes = req.body;
 
+
+    // Have to figure out a way of getting these insertion results
+    let arrayOfResults = [];
+    newAthletes.forEach(async athlete => {
+        const athletesSex = athlete.sex;
+        delete athlete.sex;
+        arrayOfResults.push(await db.collection(`roster${rosterYear}`).updateOne({"sex" : `${athletesSex}`}, {$push: {"athletes": athlete}}));
+    });
+
+    console.log(arrayOfResults);
+
     res.send(true);
 })
 
