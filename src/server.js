@@ -2,7 +2,7 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 import 'dotenv/config';
 
-const athletesRoutes = require('./routes/athletesRoutes.js');
+const rosterRoutes = require('./routes/rosterRoutes.js');
 const postsRoutes = require('./routes/postsRoutes.js');
 
 
@@ -21,7 +21,7 @@ async function start () { // Function so we dont need to rewrite the database co
     app.set('db', db);
 
     app.use('/api/posts', postsRoutes);
-    app.use('/api/athletes', athletesRoutes);
+    app.use('/api/roster', rosterRoutes);
     
     app.listen(PORT, () => {
         console.log(`Server is listening on port ${PORT}`);
