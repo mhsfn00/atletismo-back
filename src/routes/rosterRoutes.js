@@ -39,10 +39,6 @@ router.post('/addAthletes/:year', async (req, res) => {
         }
     });
 
-    console.log("female: ", femaleAthletes);
-    console.log("male: ", femaleAthletes);
-    console.log("year: ", rosterYear, typeof(rosterYear));
-
     const femaleResult = await db.collection('rosters').updateOne(
         {year: rosterYear}, {$push: {
             female: {$each: femaleAthletes}
@@ -55,12 +51,6 @@ router.post('/addAthletes/:year', async (req, res) => {
         }}
     );
 
-    console.log(femaleResult);
-    console.log(maleResult);
-    // const femaleResult = await db.collection(`roster${rosterYear}`).
-    //     updateOne({sex: "female"}, {$push: {athletes: {$each: femaleAthletes}}});
-    // const maleResult = await db.collection(`roster${rosterYear}`).
-    //     updateOne({sex: "male"}, {$push: {athletes: {$each: maleAthletes}}});
 
     res.send({ femaleResult: femaleResult, maleResult: maleResult });
 });
