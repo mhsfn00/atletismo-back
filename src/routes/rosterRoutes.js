@@ -31,9 +31,13 @@ router.post('/addAthletes/:year', async (req, res) => {
     const maleAthletes = [];
     newAthletes.forEach(athlete => {
         if (athlete.sex === "female") {
+            //Check if name already exists
+            
             delete athlete.sex;
             femaleAthletes.push(athlete);
         } else if (athlete.sex === "male") {
+            //Check if name already exists
+            
             delete athlete.sex;
             maleAthletes.push(athlete);
         }
