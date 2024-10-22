@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-    title: String,
+    title: {
+        type: String,
+        required: true
+    },
     subTitle: String,
     article: String,
     date: Date,

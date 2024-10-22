@@ -10,19 +10,22 @@ const getAllPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
     if (!req?.body) {
-        return res.status(400).json({ 'message': 'Request body might be empty' });
+        return res.status(400).json({ 'message': 'Bad request' });
+    } else if (Object.keys(req.body).length === 0) {
+        return res.status(400).json({ 'message': 'Empty request body'});
     }
 
+    const newPostJSon = req.body;
     const newPost = new MainPost({
-        title: body.title,
-        subTitle: body.subTitle,
-        article: body.article,
-        date: body.date,
-        imageAddres: body.imageAddres
+        title: newPostJSon.title,
+        subTitle: newPostJSon.subTitle,
+        article: newPostJSon.article,
+        date: newPostJSon.date,
+        imageAddres: newPostJSon.imageAddres
     });
 
     try {
-        if (body.mainPost) { //if flagged as main post (will be default on the frontend)
+        if (newPostJSon.mainPost) { //if flagged as main post (will be default on the frontend)
             if (MainPost.find().length() == 0) {
                 const dbRes = await MainPost.create(newPost);
                 return res.status(201).json(dbRes);
