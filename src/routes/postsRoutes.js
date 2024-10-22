@@ -1,14 +1,39 @@
 const express = require('express');
 const router = express.Router();
+const postsController = require('../controllers/postsController');
 
-router.get('/', async (req, res) => {
-    const db = req.app.get('db');
-    const posts = await db.collection('posts').find({}, { limit: 5 }).toArray(); // Collection posts contains all posts not tagged as mainPost
-    const mainPost = await db.collection('mainPost').findOne({}); // Finds the only main post, its own collection (mainPost), capped to 1 object
+router.route('/')
+    .get(postsController.getAllPosts)
+    .post(postsController.createPost)
+    .put()
+    .delete()
 
-    posts.unshift(mainPost); // mainPost in the first position of posts
+router.route('/:id')
+    .get()
 
-    res.json(posts);
+// router.get('/', async (req, res) => {
+//     try {
+//         const posts = await Post.find();
+//         const mainPost = await MainPost.find();
+//         posts.unshift(mainPost);
+//         res.json(posts);
+//     } catch (err) {
+//         res.status(500).json({ message: err.message });
+//     }
+// });
+
+router.post('/newPost', async (req, res) => {
+    try {
+        // add as main post if needed
+        const dbRes = await MainPost.find();
+        if (dbRes.length == 0) {
+            console.log("exists but its empty");
+        }
+        console.log("responsE--> ", dbRes);
+        // else add as normal post 
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 router.get('/:postId', async (req, res) => {
@@ -20,7 +45,7 @@ router.get('/:postId', async (req, res) => {
     res.json(post);
 });
 
-router.post('/:postId/editPost', async (req, res) => {
+router.put('/:postId/editPost', async (req, res) => {
     const db = req.app.get('db');
     const modifiedPost = req.body;
     const mainPost = await db.collection('mainPost').findOne({ id: modifiedPost.id }) ? true : false;
