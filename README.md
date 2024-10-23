@@ -1,5 +1,9 @@
-# atletismo-front
-
+# Quickstart
+```
+npm install
+npm run dev
+```
+## Detailed 
 ## Project setup
 ```
 npm install express
@@ -24,14 +28,11 @@ npx nodemon --exec npx babel-node src/server.js
 ```
 "dev": "npx nodemon --exec npx babel-node src/server.js"
 ```
-## With the above you can run the server with
-```
-npm run dev 
-```
 
 ## For mongodb
 ```
 npm install mongodb
+npm install mongoose
 ```
 
 ## dotenv package to include .env.local in process
