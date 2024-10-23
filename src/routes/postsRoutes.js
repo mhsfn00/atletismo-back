@@ -5,22 +5,11 @@ const postsController = require('../controllers/postsController');
 router.route('/')
     .get(postsController.getAllPosts)
     .post(postsController.createPost)
-    .put()
+    .put(postsController.updatePost)
     .delete()
 
 router.route('/:id')
     .get()
-
-// router.get('/', async (req, res) => {
-//     try {
-//         const posts = await Post.find();
-//         const mainPost = await MainPost.find();
-//         posts.unshift(mainPost);
-//         res.json(posts);
-//     } catch (err) {
-//         res.status(500).json({ message: err.message });
-//     }
-// });
 
 router.post('/newPost', async (req, res) => {
     try {
