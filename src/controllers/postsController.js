@@ -1,13 +1,17 @@
 const Post = require('../models/Post.js');
 const MainPost = require('../models/MainPost.js');
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res) => {           //I don't see a use for this now, but will leave it here
     const allPostsWrongOrder = await Post.find();   //All normal posts
     const allPosts = allPostsWrongOrder.reverse();  //Reverse to get posts by most recent
     const mainPost = await MainPost.find();         //Main post
     allPosts.unshift(mainPost);                     //Main post in the first position
     return res.status(200).json(allPosts);
 }
+
+// Gonna need an endpoint to get a certain amount of posts
+// and then load however many more from the last post loaded,
+// already added id for that
 
 const createPost = async (req, res) => {
     if (!req?.body) {

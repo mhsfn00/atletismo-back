@@ -8,7 +8,8 @@ const mainPostSchema = new mongoose.Schema({
     subTitle: String,
     article: String,
     date: Date,
-    imageAddress: String
+    imageAddress: String,
+    id: Number
 }, {
     collection: 'mainPost'
 });
