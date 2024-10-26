@@ -2,9 +2,10 @@ const Post = require('../models/Post.js');
 const MainPost = require('../models/MainPost.js');
 
 const getAllPosts = async (req, res) => {
-    const allPosts = await Post.find();     //All normal posts
-    const mainPost = await MainPost.find(); //Main post
-    allPosts.unshift(mainPost);             //Main post in the first position
+    const allPostsWrongOrder = await Post.find();   //All normal posts
+    const allPosts = allPostsWrongOrder.reverse();  //Reverse to get posts by most recent
+    const mainPost = await MainPost.find();         //Main post
+    allPosts.unshift(mainPost);                     //Main post in the first position
     return res.status(200).json(allPosts);
 }
 
@@ -16,7 +17,6 @@ const createPost = async (req, res) => {
     }
 
     const newPostJSon = req.body;
-    console.log("one");
 
     try {
         if (newPostJSon.mainPost) { //if flagged as main post (will be default on the frontend)
@@ -27,8 +27,14 @@ const createPost = async (req, res) => {
             } else {
                 dbRes = await MainPost.find(); //get current main post
                 const previousMainPost = dbRes[0];
-                console.log(previousMainPost);
-                await MainPost.create(previousMainPost); //save current main post as normal post
+                const newNormalPost = new Post ({
+                    title: previousMainPost.title,
+                    subTitle: previousMainPost.subTitle,
+                    article: previousMainPost.article,
+                    date: previousMainPost.date,
+                    imageAddress: previousMainPost.imageAddress
+                });
+                await Post.create(newNormalPost); //save current main post as normal post
                 const dbResUpdate = await MainPost.findOneAndUpdate({}, newPostJSon); //update main post with new post
                 return res.status(201).json(dbResUpdate);
             }
@@ -37,7 +43,6 @@ const createPost = async (req, res) => {
             return res.status(201).json(dbRes);     
         }
     } catch (err) {
-        console.log(err.message);
         return res.status(400).json(err.message);
     }
 }
@@ -62,7 +67,6 @@ const updatePost = async (req, res) => {
             return res.status(200).json(dbRes);
         }
     } catch (err) {
-        console.log(err.message);
         return res.status(400).json(err.message);
     }
 }
@@ -94,7 +98,6 @@ const deletePost = async (req, res) => {
             }
         }
     } catch (err) {
-        console.log(err.message);
         return res.status(400).json(err.message);
     }
 }
@@ -124,7 +127,6 @@ const getPostById = async (req, res) => {
             }
         }
     } catch (err) {
-        console.log(err.message);
         return res.status(400).json(err.message);
     }
 }
