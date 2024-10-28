@@ -6,7 +6,7 @@ const getByQuantity = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) { //Empty body returns all posts
-        const allPosts = await Post.find().sort(-1);
+        const allPosts = await Post.find().sort({title: -1}); //Sort -> nameOfFIeld : -1 | 1, for order
         const mainPost = await MainPost.find();         
         allPosts.unshift(mainPost);                     
         return res.status(200).json(allPosts);
@@ -16,7 +16,7 @@ const getByQuantity = async (req, res) => {
     const quantity = req.body.quantity;
     const mainPost = req.body.mainPost;
 
-    const manyPosts = 
+    //const manyPosts = 
 }
 
 // Gonna need an endpoint to get a certain amount of posts

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const counterSchema = mongoose.model('Counter', {
+const counterSchema = mongoose.Schema({
     counter: Number
 }, {
     collection: 'counter'

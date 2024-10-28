@@ -6,7 +6,7 @@ const mainPostSchema = new mongoose.Schema({
     article: String,
     date: { type: Date, required: true},
     imageAddress: String,
-    stackOrder: { type: Numnber, required: true, unique: true }
+    stackOrder: { type: Number, index: { unique: true } }
 }, {
     collection: 'mainPost'
 });
