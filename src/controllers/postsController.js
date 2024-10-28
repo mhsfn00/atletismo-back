@@ -1,12 +1,22 @@
 const Post = require('../models/Post.js');
 const MainPost = require('../models/MainPost.js');
+const Counter = require('../models/Counter.js');
 
-const getAllPosts = async (req, res) => {           //I don't see a use for this now, but will leave it here
-    const allPostsWrongOrder = await Post.find();   //All normal posts
-    const allPosts = allPostsWrongOrder.reverse();  //Reverse to get posts by most recent
-    const mainPost = await MainPost.find();         //Main post
-    allPosts.unshift(mainPost);                     //Main post in the first position
-    return res.status(200).json(allPosts);
+const getByQuantity = async (req, res) => {        
+    if (!req?.body) {
+        return res.status(400).json({ 'message': 'Bad request' });
+    } else if (Object.keys(req.body).length === 0) { //Empty body returns all posts
+        const allPosts = await Post.find().sort(-1);
+        const mainPost = await MainPost.find();         
+        allPosts.unshift(mainPost);                     
+        return res.status(200).json(allPosts);
+    }
+
+    const targetStackOrder = req.body.stackOrder;
+    const quantity = req.body.quantity;
+    const mainPost = req.body.mainPost;
+
+    const manyPosts = 
 }
 
 // Gonna need an endpoint to get a certain amount of posts
@@ -23,7 +33,7 @@ const createPost = async (req, res) => {
     const newPostJSon = req.body;
 
     try {
-        if (newPostJSon.mainPost) { //if flagged as main post (will be default on the frontend)
+        if (newPostJSon.mainPost) { //If flagged as main post (will be default on the frontend)
             let dbRes = await MainPost.find();
             if (dbRes.length == 0) {
                 dbRes = await MainPost.create(newPostJSon);
@@ -60,7 +70,6 @@ const updatePost = async (req, res) => {
 
     const updatedPostJSon = req.body;
 
-    
     try {
         if (updatedPostJSon.mainPost) {
             const dbRes = await MainPost.findOneAndUpdate({}, updatedPostJSon);
@@ -136,7 +145,7 @@ const getPostById = async (req, res) => {
 }
 
 module.exports = {
-    getAllPosts,
+    getByQuantity,
     createPost,
     updatePost,
     deletePost,

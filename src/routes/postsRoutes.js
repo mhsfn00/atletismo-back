@@ -3,7 +3,7 @@ const router = express.Router();
 const postsController = require('../controllers/postsController');
 
 router.route('/')
-    .get(postsController.getAllPosts)
+    .get(postsController.getByQuantity)
     .post(postsController.createPost)
     .put(postsController.updatePost)
     .delete(postsController.deletePost)

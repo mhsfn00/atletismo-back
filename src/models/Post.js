@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
+    title: { type: String, required: true },
     subTitle: String,
     article: String,
-    date: Date,
+    date: { type: Date, required: true},
     imageAddress: String,
-    id: Number
+    stackOrder: { type: Numnber, required: true, unique: true }
 }, {
     collection: 'posts'
 });
