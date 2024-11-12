@@ -16,12 +16,8 @@ const getByQuantity = async (req, res) => {
     const quantity = req.body.quantity;
     const mainPost = req.body.mainPost;
 
-    //const manyPosts = 
+    //const manyPosts = Everything setup to get a custom ammount of posts + main post if needed (TODO)
 }
-
-// Gonna need an endpoint to get a certain amount of posts
-// and then load however many more from the last post loaded,
-// already added id for that
 
 const createPost = async (req, res) => {
     if (!req?.body) {
@@ -37,20 +33,20 @@ const createPost = async (req, res) => {
     }
    
     const newPostStackOrder = postsCounter[0].counter;
+    const newPost = {
+        title: newPostJSon.title,
+        subTitle: newPostJSon.subTitle,
+        article: newPostJSon.article,
+        date: newPostJSon.date,
+        imageAddress: newPostJSon.imageAddress,
+        stackOrder: newPostStackOrder || 0
+    }
 
     try {
         if (newPostJSon.mainPost) { //If flagged as main post (will be default on the frontend)
             let dbRes = await MainPost.find();
             if (dbRes.length == 0) {
-                const newMainPost = new MainPost({
-                    title: newPostJSon.title,
-                    subTitle: newPostJSon.subTitle,
-                    article: newPostJSon.article,
-                    date: newPostJSon.date,
-                    imageAddress: newPostJSon.imageAddress,
-                    stackOrder: newPostStackOrder || 0
-                });
-                dbRes = await MainPost.create(newMainPost);
+                dbRes = await MainPost.create(newPost);
                 await PostsCounter.findOneAndUpdate({}, { counter : newPostStackOrder + 1 });
                 return res.status(201).json(dbRes);
             } else {
@@ -65,12 +61,13 @@ const createPost = async (req, res) => {
                     stackOrder: previousMainPost.stackOrder
                 });
                 await Post.create(newNormalPost); //save current main post as normal post
-                // Have to create the new main post here with stack order (TODO)
-                const dbResUpdate = await MainPost.findOneAndUpdate({}, newPostJSon); //update main post with new post
+                await PostsCounter.findOneAndUpdate({}, { counter : newPostStackOrder + 1 });
+                const dbResUpdate = await MainPost.findOneAndUpdate({}, newPost); //update main post with new post
                 return res.status(201).json(dbResUpdate);
             }
-        } else { //not flagged as main, keeps the previous main post
-            const dbRes = await Post.create(newPostJSon); // Have to change this line to include stack order on the new post (TODO)
+        } else { //not flagged as main, keeps the previous main post 
+            const dbRes = await Post.create(newPost);
+            await PostsCounter.findOneAndUpdate({}, { counter : newPostStackOrder + 1 });
             return res.status(201).json(dbRes);     
         }
     } catch (err) {
