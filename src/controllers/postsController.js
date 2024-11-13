@@ -10,12 +10,23 @@ const getByQuantity = async (req, res) => {
         const mainPost = await MainPost.find();         
         allPosts.unshift(mainPost);                     
         return res.status(200).json(allPosts);
+    } else {
+        const quantityToSkip = req.body.quantityToSkip;
+        const quantityToGet = req.body.quantityToGet;
+        const getMainPost = req.body.mainPost;
+
+        if(getMainPost) {
+            const mainPost = await MainPost.find();
+            console.log(mainPost);
+        }
+
+        
+
+        const allPosts = await Post.find().skip(quantityToSkip).limit(quantityToGet).sort({stackOrder: -1});
+        console.log(allPosts);
     }
-
-    const targetStackOrder = req.body.stackOrder;
-    const quantity = req.body.quantity;
-    const mainPost = req.body.mainPost;
-
+    
+    
     //const manyPosts = Everything setup to get a custom ammount of posts + main post if needed (TODO)
 }
 
