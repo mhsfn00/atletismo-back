@@ -4,7 +4,7 @@ const rosterController = require('../controllers/rosterController');
 
 router.route('/')
     .get(rosterController.getBySex)
-    .post(rosterController.createAthlete)
+    .post(rosterController.createAthletes)
     .put(rosterController.updateAthlete)
     .delete(rosterController.deleteAthlete)
 
