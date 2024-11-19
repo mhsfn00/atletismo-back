@@ -6,28 +6,25 @@ const getByQuantity = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) { //Empty body returns all posts
-        const allPosts = await Post.find().sort({title: -1}); //Sort -> nameOfFIeld : -1 | 1, for order
+        const allPosts = await Post.find().sort({title: -1});
         const mainPost = await MainPost.find();         
         allPosts.unshift(mainPost);                     
         return res.status(200).json(allPosts);
     } else {
         const quantityToSkip = req.body.quantityToSkip;
         const quantityToGet = req.body.quantityToGet;
-        const getMainPost = req.body.mainPost;
+        const getMainPost = req.body.getMainPost;
 
         if(getMainPost) {
             const mainPost = await MainPost.find();
-            console.log(mainPost);
+            let manyPostsWMain = await Post.find().skip(quantityToSkip).limit(quantityToGet).sort({stackOrder: -1});
+            manyPostsWMain.unshift(mainPost);
+            return res.status(200).json(manyPostsWMain);
+        } else {
+            const manyPosts = await Post.find().skip(quantityToSkip).limit(quantityToGet).sort({stackOrder: -1});
+        return res.status(200).json(manyPosts);
         }
-
-        
-
-        const allPosts = await Post.find().skip(quantityToSkip).limit(quantityToGet).sort({stackOrder: -1});
-        console.log(allPosts);
     }
-    
-    
-    //const manyPosts = Everything setup to get a custom ammount of posts + main post if needed (TODO)
 }
 
 const createPost = async (req, res) => {
