@@ -12,8 +12,11 @@ const getBySex = async (req, res) => {
         }
     }
 
+    const sex = req.body.sex;
+
     try {
-        // Getting athletes based on sex
+        const athletes = await Athlete.find({ sex: `${sex}` });
+        return res.status(200).json(athletes);
     } catch (err) {
         return res.status(400).json(err.message);
     }
