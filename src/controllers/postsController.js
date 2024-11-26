@@ -115,7 +115,7 @@ const deletePost = async (req, res) => {
 
     const postId = req.body._id;
     if (!postId) {
-        return res.status(400).json({ 'message': 'Could not find post id'});
+        return res.status(400).json({ 'message': 'Request lacks post id'});
     }
 
     try {
