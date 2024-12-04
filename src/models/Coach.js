@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const coachSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	pictureAddress: String,
-	titles : String ,
+	titles: String,
+	groups: String,
 }, {
     collection: 'coaches'
 });
