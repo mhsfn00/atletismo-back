@@ -53,22 +53,14 @@ const updateAthlete = async (req, res) => {
         return res.status(400).json({ 'message': 'Empty request body'});
     }
 
-    const arrayOfUpdatedAthletes = req.body;
-    let responses = [];
+    const updatedAthlete = req.body;    
 
     try {
-        for (const athlete of arrayOfUpdatedAthletes) {
-            console.log(athlete);
-            const dbRes = await Athlete.findOneAndUpdate({ _id: `${athlete._id}`}, athlete);
-            responses.push({
-                "Athlete updated" : dbRes
-            });
-        }
+        const dbRes = await Athlete.findOneAndUpdate({ _id: `${updatedAthlete._id}`}, updatedAthlete);
+        return res.status(200).json(dbRes);
     } catch (err) {
         return res.status(400).json(err.message);
     }
-
-    return res.status(200).json(responses);
 }
 
 const deleteAthlete = async (req, res) => {

@@ -5,7 +5,7 @@ const coachesController = require('../controllers/coachesController');
 router.route('/')
     .get(coachesController.getCoaches)
     .post(coachesController.createCoaches)
-    .put(coachesController.updateCoaches)
+    .put(coachesController.updateCoach)
     .delete(coachesController.deleteCoach)
 
 router.route('/getById')
