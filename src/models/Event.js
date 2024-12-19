@@ -6,7 +6,8 @@ const eventSchema = new mongoose.Schema({
     location : String,
     date: Date,
     imageAddress: String,
-    duration: Number
+    duration: Number,
+    season: Number
 }, {
     collection: 'events'
 });
