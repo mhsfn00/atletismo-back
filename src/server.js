@@ -4,6 +4,7 @@ import 'dotenv/config';
 const rosterRoutes = require('./routes/rosterRoutes.js');
 const postsRoutes = require('./routes/postsRoutes.js');
 const coachesRoutes = require('./routes/coachesRoutes.js');
+const eventsRoutes = require('./routes/eventsRoutes.js');
 
 async function start () {
     const app = express();
@@ -26,6 +27,7 @@ async function start () {
     app.use('/api/posts', postsRoutes);
     app.use('/api/roster', rosterRoutes);
     app.use('/api/coaches', coachesRoutes);
+    app.use('/api/events', eventsRoutes);
    
     app.listen(PORT, () => {
         console.log(`Server is listening on port ${PORT}`);
