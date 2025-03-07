@@ -5,7 +5,11 @@ const getUsers = async (req, res) => {
         return res.status(400).json({ 'message': 'Bad request' });
     } else {
         try {
-            const allUsers = await User.find();
+            const allUsers = await User.find({}, 
+                {   'username' : 1, 
+                    'name' : 1,
+                    'isAdmin': 1
+                });
             return res.status(200).json(allUsers);
         }catch (err) {
             return res.status(400).json(err.message);
@@ -38,7 +42,7 @@ const updateUser = async (req, res) => {
 
     try {
         const updatedUser = req.body;
-        const dbRes = await User.findOneAndUpdate({ _id: `${updatedUser._id}`}, updateUser);
+        const dbRes = await User.findOneAndUpdate({ _id: updatedUser._id }, updatedUser);
         return res.status(200).json(dbRes);
     } catch (err) {
         return res.status(400).json(err.message);

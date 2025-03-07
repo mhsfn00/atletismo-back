@@ -31,7 +31,7 @@ async function start () {
     app.use('/api/coaches', coachesRoutes);
     app.use('/api/events', eventsRoutes);
     app.use('/api/about', aboutRoutes);
-    app.use('api/users', userRoutes);
+    app.use('/api/users', userRoutes);
    
     app.listen(PORT, () => {
         console.log(`Server is listening on port ${PORT}`);
