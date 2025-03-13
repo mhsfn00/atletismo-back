@@ -1,4 +1,5 @@
 const User = require('../models/User.js');
+const bcrypt = require('bcrypt');
 
 const getUsers = async (req, res) => {        
     if (!req?.body) {
@@ -26,8 +27,15 @@ const createUser = async (req, res) => {
 
     try {
         const newUser = req.body;
+        const plainPassword = newUser.password;
+        const hashedPassword = await bcrypt.hash(plainPassword, 10);
+        newUser.password = hashedPassword;
         const dbRes = await User.create(newUser);
-        return res.status(200).json(dbRes);
+        if (dbRes) {
+            return res.status(200).json({'message' : 'User updated'})
+        } else {
+            return res.status(200).json({'message' : 'Error while updating on database'})
+        }
     } catch (err) {
         return res.status(400).json(err.message);
     }
@@ -42,8 +50,15 @@ const updateUser = async (req, res) => {
 
     try {
         const updatedUser = req.body;
+        const plainPassword = updatedUser.password;
+        const hashedPassword = await bcrypt.hash(plainPassword, 10);
+        updatedUser.password = hashedPassword;
         const dbRes = await User.findOneAndUpdate({ _id: updatedUser._id }, updatedUser);
-        return res.status(200).json(dbRes);
+        if (dbRes) {
+            return res.status(200).json({'message' : 'User updated'})
+        } else {
+            return res.status(200).json({'message' : 'Error while updating on database'})
+        }
     } catch (err) {
         return res.status(400).json(err.message);
     }

@@ -7,6 +7,7 @@ const coachesRoutes = require('./routes/coachesRoutes.js');
 const eventsRoutes = require('./routes/eventsRoutes.js');
 const aboutRoutes = require('./routes/aboutRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
+const authRoutes = require('./routes/authRoutes.js');
 
 async function start () {
     const app = express();
@@ -32,6 +33,7 @@ async function start () {
     app.use('/api/events', eventsRoutes);
     app.use('/api/about', aboutRoutes);
     app.use('/api/users', userRoutes);
+    app.use('/api/auth', authRoutes);
    
     app.listen(PORT, () => {
         console.log(`Server is listening on port ${PORT}`);
