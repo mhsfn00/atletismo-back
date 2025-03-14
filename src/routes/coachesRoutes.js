@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const coachesController = require('../controllers/coachesController');
+const verifyJWT = require('../middleware/authMiddleware');
 
 router.route('/')
     .get(coachesController.getCoaches)
-    .post(coachesController.createCoaches)
-    .put(coachesController.updateCoach)
-    .delete(coachesController.deleteCoach)
+    .post(verifyJWT, coachesController.createCoaches)
+    .put(verifyJWT, coachesController.updateCoach)
+    .delete(verifyJWT, coachesController.deleteCoach)
 
 router.route('/getById')
     .get(coachesController.getById)

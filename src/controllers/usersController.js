@@ -32,7 +32,7 @@ const createUser = async (req, res) => {
         newUser.password = hashedPassword;
         const dbRes = await User.create(newUser);
         if (dbRes) {
-            return res.status(200).json({'message' : 'User updated'})
+            return res.status(200).json({'message' : 'User created'})
         } else {
             return res.status(200).json({'message' : 'Error while updating on database'})
         }
