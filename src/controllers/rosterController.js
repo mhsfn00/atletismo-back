@@ -32,15 +32,16 @@ const createAthletes = async (req, res) => {
     const arrayOfAthletes = req.body;
     let responses = [];
 
-    try {
-        for (const athlete of arrayOfAthletes) {
+    for (const athlete of arrayOfAthletes) {
+        try {
             const dbRes = await Athlete.create(athlete);
             responses.push({
                 "Athlete created" : dbRes
             });
+        } catch (err) {
+            responses.push({"Not created" : athlete, "Reason" : err.message});
         }
-    } catch (err) {
-        return res.status(400).json(err.message);
+        
     }
 
     return res.status(200).json(responses);
@@ -56,8 +57,12 @@ const updateAthlete = async (req, res) => {
     const updatedAthlete = req.body;    
 
     try {
-        const dbRes = await Athlete.findOneAndUpdate({ _id: `${updatedAthlete._id}`}, updatedAthlete);
-        return res.status(200).json(dbRes);
+        const dbRes = await Athlete.findOneAndUpdate({ _id: `${updatedAthlete._id}`}, updatedAthlete, { new : true});
+        if (dbRes) {
+            return res.status(200).json(dbRes);
+        } else {
+            return res.status(400).json({ "messsage" : "Athlete not updated"});
+        }
     } catch (err) {
         return res.status(400).json(err.message);
     }
@@ -73,15 +78,20 @@ const deleteAthlete = async (req, res) => {
     const arrayOfIds = req.body;
     let responses = [];
 
-    try {
-        for (const id of arrayOfIds) {
+    for (const id of arrayOfIds) {
+        try {
             const dbRes = await Athlete.deleteOne({ _id: `${id._id}`});
             responses.push({
-                "Athlete deleted" : dbRes
+                "Athlete id" : id._id,
+                "Deleted" : dbRes.deletedCount == 1 ? "True" : "False"
+            });
+        } catch (err) {
+            responses.push({
+                "Athlete id" : id._id,
+                "Deleted" : "Assuming it was'nt",
+                "Reason" : err.message
             });
         }
-    } catch (err) {
-        return res.status(400).json(err.message);
     }
 
     return res.status(200).json(responses);

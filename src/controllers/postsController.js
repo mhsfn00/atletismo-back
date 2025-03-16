@@ -94,12 +94,20 @@ const updatePost = async (req, res) => {
 
     try {
         if (updatedPostJSon.mainPost) {
-            const dbRes = await MainPost.findOneAndUpdate({}, updatedPostJSon);
-            return res.status(200).json(dbRes);
+            const dbRes = await MainPost.findOneAndUpdate({}, updatedPostJSon, { new: true});
+            if (dbRes) {
+                return res.status(200).json(dbRes);
+            } else {
+                return res.status(400).json({"message" : "Post not updated"});
+            }
         } else {
             const filter = { _id: `${updatedPostJSon._id}`};
-            const dbRes = await Post.findOneAndUpdate(filter, updatedPostJSon);
-            return res.status(200).json(dbRes);
+            const dbRes = await Post.findOneAndUpdate(filter, updatedPostJSon, { new: true});
+            if (dbRes) {
+                return res.status(200).json(dbRes);
+            } else {
+                return res.status(400).json({"message" : "Post not updated"});
+            }
         }
     } catch (err) {
         return res.status(400).json(err.message);
