@@ -36,10 +36,13 @@ const createAthletes = async (req, res) => {
         try {
             const dbRes = await Athlete.create(athlete);
             responses.push({
-                "Athlete created" : dbRes
+                'Athlete created' : dbRes
             });
         } catch (err) {
-            responses.push({"Not created" : athlete, "Reason" : err.message});
+            responses.push({
+                'Not created' : athlete, 
+                'Reason' : err.message
+            });
         }
         
     }
@@ -57,7 +60,11 @@ const updateAthlete = async (req, res) => {
     const updatedAthlete = req.body;    
 
     try {
-        const dbRes = await Athlete.findOneAndUpdate({ _id: `${updatedAthlete._id}`}, updatedAthlete, { new : true});
+        const dbRes = await Athlete.findOneAndUpdate({ 
+            _id: `${updatedAthlete._id}`}, 
+            updatedAthlete, 
+            { new : true}
+        );
         if (dbRes) {
             return res.status(200).json(dbRes);
         } else {
@@ -68,7 +75,7 @@ const updateAthlete = async (req, res) => {
     }
 }
 
-const deleteAthlete = async (req, res) => {
+const deleteAthletes = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
@@ -127,5 +134,5 @@ module.exports = {
     getById,
     createAthletes,
     updateAthlete,
-    deleteAthlete
+    deleteAthletes
 }

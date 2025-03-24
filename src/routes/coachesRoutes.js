@@ -7,7 +7,7 @@ router.route('/')
     .get(coachesController.getCoaches)
     .post(verifyJWT, coachesController.createCoaches)
     .put(verifyJWT, coachesController.updateCoach)
-    .delete(verifyJWT, coachesController.deleteCoach)
+    .delete(verifyJWT, coachesController.deleteCoaches)
 
 router.route('/getById')
     .get(coachesController.getById)
