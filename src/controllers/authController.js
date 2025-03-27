@@ -12,8 +12,9 @@ const login = async (req, res) => {
 
   try {
     const foundUser = await User.findOne({ username });
-    if (!foundUser) return res.sendStatus(401);
-
+    if (!foundUser) return res.status(401).json({
+      message : 'username or password incorrect'
+    });
     const match = await bcrypt.compare(password, foundUser.password);
     if (match) {
       const accessToken = jwt.sign(
@@ -28,7 +29,9 @@ const login = async (req, res) => {
       );
       res.json({ accessToken });
     } else {
-      res.sendStatus(401);
+      res.status(401).json({
+        message : 'username or password incorrect'
+      });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
