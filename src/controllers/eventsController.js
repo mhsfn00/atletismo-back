@@ -9,7 +9,9 @@ const getEvents = async (req, res) => {
 
     const season = req.body.season;
     if(!season) {
-        return res.status(400).json({'message' : 'season needs to be provided'});
+        return res.status(400).json({
+            'message' : 'season needs to be provided'
+        });
     }
 
     try {
@@ -29,7 +31,9 @@ const getById = async (req, res) => {
 
     const eventId = req.body._id;
     if(!eventId) {
-        return res.status(400).json({'message' : 'event id needs to be provided'});
+        return res.status(400).json({
+            'message' : 'event id needs to be provided'
+        });
     }
 
     try {
@@ -40,21 +44,31 @@ const getById = async (req, res) => {
     }
 }
 
-const createEvent = async (req, res) => {
+const createEvents = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
         return res.status(400).json({ 'message': 'Empty request body' });
     }
 
-    const newEvent = req.body;
+    const newEvents = req.body;
+    let dbResponses = [];
 
-    try {
-        const dbRes = await Event.create(newEvent);
-        return res.status(200).json(dbRes);
-    } catch (err) {
-        return res.status(400).json(err.message);
+    for (const event of newEvents) {
+        try {
+            const dbRes = await Event.create(event);
+            dbResponses.push({
+                'Event created' : dbRes
+            });
+        } catch (err) {
+            dbResponses.push({
+                'Not created' : event,
+                'reason' : err.message
+            });
+        }
     }
+
+    return res.status(200).json(dbResponses);
 }
 
 const updateEvent = async (req, res) => {
@@ -65,10 +79,13 @@ const updateEvent = async (req, res) => {
     }
 
     const updatedEvent = req.body;
-    console.log(updatedEvent)
 
     try {
-        const dbRes = await Event.findOneAndUpdate({ _id: `${updatedEvent._id}`}, updatedEvent);
+        const dbRes = await Event.findOneAndUpdate({ 
+            _id: `${updatedEvent._id}`}, 
+            updatedEvent,
+            { new : true}
+        );
         res.status(200).json(dbRes);
     } catch (err) {
         res.status(400).json(err.message);
@@ -98,7 +115,7 @@ const deleteEvent = async (req, res) => {
 module.exports = {
     getEvents,
     getById,
-    createEvent,
+    createEvents,
     updateEvent,
     deleteEvent
 }

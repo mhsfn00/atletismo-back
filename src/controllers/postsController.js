@@ -70,7 +70,11 @@ const createPost = async (req, res) => {
                 });
                 await Post.create(newNormalPost); //save current main post as normal post
                 await PostsCounter.findOneAndUpdate({}, { counter : newPostStackOrder + 1 });
-                const dbResUpdate = await MainPost.findOneAndUpdate({}, newPost); //update main post with new post
+                const dbResUpdate = await MainPost.findOneAndUpdate(
+                    {}, 
+                    newPost,
+                    { new : true}
+                ); //update main post with new post
                 return res.status(201).json(dbResUpdate);
             }
         } else { //not flagged as main, keeps the previous main post 
@@ -94,12 +98,28 @@ const updatePost = async (req, res) => {
 
     try {
         if (updatedPostJSon.mainPost) {
-            const dbRes = await MainPost.findOneAndUpdate({}, updatedPostJSon);
-            return res.status(200).json(dbRes);
+            const dbRes = await MainPost.findOneAndUpdate(
+                {}, 
+                updatedPostJSon, 
+                { new: true}
+            );
+            if (dbRes) {
+                return res.status(200).json(dbRes);
+            } else {
+                return res.status(400).json({
+                    'message' : 'Post not updated'
+                });
+            }
         } else {
             const filter = { _id: `${updatedPostJSon._id}`};
-            const dbRes = await Post.findOneAndUpdate(filter, updatedPostJSon);
-            return res.status(200).json(dbRes);
+            const dbRes = await Post.findOneAndUpdate(filter, updatedPostJSon, { new: true});
+            if (dbRes) {
+                return res.status(200).json(dbRes);
+            } else {
+                return res.status(400).json({
+                    'message' : 'Post not updated'
+                });
+            }
         }
     } catch (err) {
         return res.status(400).json(err.message);

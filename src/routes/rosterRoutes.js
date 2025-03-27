@@ -7,7 +7,7 @@ router.route('/')
     .get(rosterController.getBySex)
     .post(verifyJWT, rosterController.createAthletes)
     .put(verifyJWT, rosterController.updateAthlete)
-    .delete(verifyJWT, rosterController.deleteAthlete)
+    .delete(verifyJWT, rosterController.deleteAthletes)
 
 router.route('/getById')
     .get(rosterController.getById)

@@ -22,7 +22,11 @@ const updateAbout = async (req, res) => {
 
     const newAbout = req.body;
     try {
-        const dbRes = await About.findOneAndUpdate({}, newAbout);
+        const dbRes = await About.findOneAndUpdate(
+            {}, 
+            newAbout,
+            { new : true}
+        );
         return res.status(200).json(dbRes);
     } catch (err) {
         return res.status(400).json(err.message);

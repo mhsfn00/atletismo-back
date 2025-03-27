@@ -23,15 +23,18 @@ const createCoaches = async (req, res) => {
     const newCoaches = req.body; //Array of coaches
     let dbResponses = [];
 
-    try {
-        for (const newCoach of newCoaches) {
+    for (const newCoach of newCoaches) {
+        try {
             const dbRes = await Coach.create(newCoach);
             dbResponses.push({
                 'Coach created' : dbRes
             });
+        } catch (err) {
+            dbResponses.push({
+                'Not created' : newCoach,
+                'reason' : err.message
+            });
         }
-    } catch (err) {
-        return res.status(400).json(err.message);
     }
 
     return res.status(200).json(dbResponses);
@@ -47,39 +50,53 @@ const updateCoach = async (req, res) => {
     const updatedCoach = req.body;
 
     try {
-        const dbRes = await Coach.findOneAndUpdate({ _id: `${updatedCoach._id}`}, updatedCoach);
+        const dbRes = await Coach.findOneAndUpdate({ 
+            _id: `${updatedCoach._id}`}, 
+            updatedCoach,
+            { new : true }
+        );
         if (dbRes) {
             return res.status(200).json(dbRes);
         } else {
-            return res.status(400).json({ 'message ': 'Coach not updated' })
+            return res.status(400).json({ 
+                'message ': 'Coach not found' 
+            });
         }
     } catch (err) {
         return res.status(400).json(err.message);
     }
 }
 
-const deleteCoach = async (req, res) => {
+const deleteCoaches = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
         return res.status(400).json({ 'message': 'Empty request body'});
     }
 
-    const coachId = req.body._id;
-    if (!coachId) {
-        return res.status(400).json({ 'message': 'Request lacks coach id'});
+    const arrayOfIds = req.body;
+    console.log(arrayOfIds)
+    let responses = [];
+
+    for (const id of arrayOfIds) {
+        try {
+            const dbRes = await Coach.deleteOne({ 
+                _id: `${id._id}`
+            });
+            responses.push({
+                "Coach id" : id._id,
+                "Deleted" : dbRes.deletedCount == 1 ? "True" : "False"
+            });
+        } catch (err) {
+            responses.push({
+                "Coach id" : id._id,
+                "Deleted" : "Assuming it was'nt",
+                "Reason" : err.message
+            });
+        }
     }
 
-    try {
-        const dbRes = await Coach.deleteOne({ _id: `${coachId}`});
-        if (dbRes.deletedCount == 1) {
-            return res.status(200).json(dbRes);
-        } else {
-            return res.status(400).json({ 'message ': 'Coach not deleted' })
-        }
-    } catch (err) {
-        return res.status(400).json(err.message);
-    }
+    return res.status(200).json(responses);
 }
 
 const getById = async (req, res) => {
@@ -110,6 +127,6 @@ module.exports = {
     getCoaches,
     createCoaches,
     updateCoach,
-    deleteCoach,
+    deleteCoaches,
     getById
 }
