@@ -1,3 +1,4 @@
+const softDelete = require('../helpers/softDelete.js');
 const Post = require('../models/Post.js');
 const MainPost = require('../models/MainPost.js');
 const PostsCounter = require('../models/PostsCounter.js');
@@ -31,7 +32,7 @@ const createPost = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
-        return res.status(400).json({ 'message': 'Empty request body'});
+        return res.status(400).json({ 'message': 'Empty request body' });
     }
 
     const newPostJSon = req.body;
@@ -73,7 +74,7 @@ const createPost = async (req, res) => {
                 const dbResUpdate = await MainPost.findOneAndUpdate(
                     {}, 
                     newPost,
-                    { new : true}
+                    { new : true }
                 ); //update main post with new post
                 return res.status(201).json(dbResUpdate);
             }
@@ -91,7 +92,7 @@ const updatePost = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
-        return res.status(400).json({ 'message': 'Empty request body'});
+        return res.status(400).json({ 'message': 'Empty request body' });
     }
 
     const updatedPostJSon = req.body;
@@ -130,24 +131,32 @@ const deletePost = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
-        return res.status(400).json({ 'message': 'Empty request body'});
+        return res.status(400).json({ 'message': 'Empty request body' });
     }
 
     const postId = req.body._id;
     if (!postId) {
-        return res.status(400).json({ 'message': 'Request lacks post id'});
+        return res.status(400).json({ 'message': 'Request lacks post id' });
     }
 
     try {
-        let dbRes = await MainPost.find({ _id: `${postId}`});
-        if (dbRes.length != 0) {
-            await MainPost.deleteOne({ _id: `${postId}`});
-            return res.status(200).json({ 'message': 'Post deleted successfuly'});
+        let objectToDelete = await MainPost.find({ _id: `${postId}`});
+        if (objectToDelete.length != 0) {
+            const softDelRes = await softDelete.deleteObject(objectToDelete[0], 'mainPost');
+            const hardDeleteRes = await MainPost.deleteOne({ _id: `${postId}`});
+            return res.status(200).json({
+                'softDelete': softDelRes,
+                'hardDelete': hardDeleteRes
+            });
         } else {
-            dbRes = await Post.find({ _id: `${postId}`});
-            if (dbRes.length != 0) {
-                await Post.deleteOne({ _id: `${postId}`});
-                return res.status(200).json({ 'message': 'Post deleted successfuly'});
+            objectToDelete = await Post.find({ _id: `${postId}`});
+            if (objectToDelete.length != 0) {
+                const softDelRes = await softDelete.deleteObject(objectToDelete[0], 'posts');
+                const hardDeleteRes = await Post.deleteOne({ _id: `${postId}`});
+                return res.status(200).json({
+                    'softDelete': softDelRes,
+                    'hardDelete': hardDeleteRes
+                });
             } else {
                 return res.status(400).json("Post was not found");
             }
@@ -161,12 +170,12 @@ const getPostById = async (req, res) => {
     if (!req?.body) {
         return res.status(400).json({ 'message': 'Bad request' });
     } else if (Object.keys(req.body).length === 0) {
-        return res.status(400).json({ 'message': 'Empty request body'});
+        return res.status(400).json({ 'message': 'Empty request body' });
     }
 
     const postId = req.body._id;
     if (!postId) {
-        return res.status(400).json({ 'message': 'Could not find post id'});
+        return res.status(400).json({ 'message': 'Could not find post id' });
     }
 
     try {

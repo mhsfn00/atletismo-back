@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import 'dotenv/config';
+const initialize = require('./db/initializeCollections.js');
 const rosterRoutes = require('./routes/rosterRoutes.js');
 const postsRoutes = require('./routes/postsRoutes.js');
 const coachesRoutes = require('./routes/coachesRoutes.js');
@@ -24,7 +25,10 @@ async function start () {
     };
 
     mongoose.connect(url, clientOptions)
-    .then(() => console.log('DB connected'))
+    .then(() => {
+        console.log('DB connected');
+        initialize();
+    })
     .catch(err => console.error(err));
 
     app.use('/api/posts', postsRoutes);
