@@ -1,4 +1,5 @@
 const Athlete = require('../models/Athlete.js');
+const softDelete = require('../helpers/softDelete.js');
 
 const getBySex = async (req, res) => {
     if (!req?.body) {
@@ -44,7 +45,6 @@ const createAthletes = async (req, res) => {
                 'Reason' : err.message
             });
         }
-        
     }
 
     return res.status(200).json(responses);
@@ -87,8 +87,11 @@ const deleteAthletes = async (req, res) => {
 
     for (const id of arrayOfIds) {
         try {
+            const athleteToDelete = await Athlete.findOne({ _id: id});
+            const softDelRes = await softDelete.deleteObject(athleteToDelete, 'roster');
             const dbRes = await Athlete.deleteOne({ _id: `${id._id}`});
             responses.push({
+                "Soft Delete" : softDelRes,
                 "Athlete id" : id._id,
                 "Deleted" : dbRes.deletedCount == 1 ? "True" : "False"
             });

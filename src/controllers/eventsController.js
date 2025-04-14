@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const softDelete = require('../helpers/softDelete.js');
 
 const getEvents = async (req, res) => {
     if (!req?.body) {
@@ -105,8 +106,13 @@ const deleteEvent = async (req, res) => {
     }
 
     try {
-        const dbRes = await Event.findOneAndDelete({ _id: `${eventId}`});
-        return res.status(200).json({ 'message' : `deleted event with id ${dbRes._id}`});
+        const eventToDelete = await Event.findOne({ _id: eventId });
+        const softDelRes = await softDelete.deleteObject(eventToDelete, 'events');
+        const dbRes = await Event.findOneAndDelete({ _id: `${eventId}` });
+        return res.status(200).json({ 
+            'Soft Delete' : softDelRes,
+            'Hard Delete' : `deleted event with id ${dbRes._id}`
+        });
     } catch (err) {
         return res.status(400).json(err.message);
     }
