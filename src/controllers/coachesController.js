@@ -1,4 +1,5 @@
 const Coach = require('../models/Coach');
+const softDelete = require('../helpers/softDelete.js');
 
 const getCoaches = async (req, res) => {
     if (!req?.body) {
@@ -75,17 +76,19 @@ const deleteCoaches = async (req, res) => {
     }
 
     const arrayOfIds = req.body;
-    console.log(arrayOfIds)
     let responses = [];
 
     for (const id of arrayOfIds) {
         try {
+            const coachToDelete = await Coach.findOne({ _id: id});
+            const softDelRes = await softDelete.deleteObject(coachToDelete, 'coaches');
             const dbRes = await Coach.deleteOne({ 
                 _id: `${id._id}`
             });
             responses.push({
+                "Soft Delete" : softDelRes,
                 "Coach id" : id._id,
-                "Deleted" : dbRes.deletedCount == 1 ? "True" : "False"
+                "Hard Delete" : dbRes.deletedCount == 1 ? "True" : "False"
             });
         } catch (err) {
             responses.push({

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { ObjectId } = require('mongoose').Types;
 const dbConnection = mongoose.connection;
 const collectionLimit = 20; // Standard limit for all collections
 
@@ -23,7 +22,6 @@ const deleteObject = async (objectToDelete, collectionName) => {
         }
         const capEnsured = ensureCollectionCap(deletedCollectionName);
         if (!capEnsured) {
-            console.log("am i here?")
             return {
                 'dbRes' : dbRes,
                 'cap' : `cap was not ensured, ${deletedCollectionName} has over ${collectionLimit} documents`

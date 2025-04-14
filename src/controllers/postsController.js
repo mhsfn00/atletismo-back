@@ -140,18 +140,19 @@ const deletePost = async (req, res) => {
     }
 
     try {
-        let objectToDelete = await MainPost.find({ _id: `${postId}`});
+        // TODO: after deliting main post adding the latest one as main
+        let objectToDelete = await MainPost.findOne({ _id: `${postId}`});
         if (objectToDelete.length != 0) {
-            const softDelRes = await softDelete.deleteObject(objectToDelete[0], 'mainPost');
+            const softDelRes = await softDelete.deleteObject(objectToDelete, 'mainPost');
             const hardDeleteRes = await MainPost.deleteOne({ _id: `${postId}`});
             return res.status(200).json({
                 'softDelete': softDelRes,
                 'hardDelete': hardDeleteRes
             });
         } else {
-            objectToDelete = await Post.find({ _id: `${postId}`});
+            objectToDelete = await Post.findOne({ _id: `${postId}`});
             if (objectToDelete.length != 0) {
-                const softDelRes = await softDelete.deleteObject(objectToDelete[0], 'posts');
+                const softDelRes = await softDelete.deleteObject(objectToDelete, 'posts');
                 const hardDeleteRes = await Post.deleteOne({ _id: `${postId}`});
                 return res.status(200).json({
                     'softDelete': softDelRes,

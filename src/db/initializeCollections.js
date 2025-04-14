@@ -9,9 +9,10 @@ async function initialize() {
         });
 
         const collections = [
-            'about', 'coaches', 'counter', 'events', 'mainPost', 'posts', 'roster', 'users',
-            'deletedAbout', 'deletedCoaches', 'deletedEvents', 'deletedPosts', 'deletedRoster',
-            'deletedUsers', 'deletedMainPost'
+            'about', 'coaches', 'counter', 'events', 'mainPost', 
+            'posts', 'roster', 'users','deletedCoaches', 
+            'deletedEvents', 'deletedPosts', 'deletedRoster',
+            'deletedMainPost'
         ];
 
         for (const collectionName of collections) {
