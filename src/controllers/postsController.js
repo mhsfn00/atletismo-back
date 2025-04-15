@@ -142,16 +142,19 @@ const deletePost = async (req, res) => {
     try {
         // TODO: after deliting main post adding the latest one as main
         let objectToDelete = await MainPost.findOne({ _id: `${postId}`});
-        if (objectToDelete.length != 0) {
+        if (objectToDelete) {
             const softDelRes = await softDelete.deleteObject(objectToDelete, 'mainPost');
             const hardDeleteRes = await MainPost.deleteOne({ _id: `${postId}`});
+            const { creationRes, deletionRes } = await mainPostPermanence();
             return res.status(200).json({
                 'softDelete': softDelRes,
-                'hardDelete': hardDeleteRes
+                'hardDelete': hardDeleteRes,
+                'new main post': creationRes,
+                'deleted main' : deletionRes 
             });
         } else {
             objectToDelete = await Post.findOne({ _id: `${postId}`});
-            if (objectToDelete.length != 0) {
+            if (objectToDelete) {
                 const softDelRes = await softDelete.deleteObject(objectToDelete, 'posts');
                 const hardDeleteRes = await Post.deleteOne({ _id: `${postId}`});
                 return res.status(200).json({
@@ -193,6 +196,33 @@ const getPostById = async (req, res) => {
         }
     } catch (err) {
         return res.status(400).json(err.message);
+    }
+}
+
+const mainPostPermanence = async () => {
+    try {
+        const latestPost = await Post.findOne().sort({stackOrder: -1});
+        if (!latestPost) {
+            return ('Could not find a normal post to turn into main post');
+        } else {
+            const idOfNormalPost = latestPost._id.toString();
+            const newMainPost = new MainPost({
+                title: latestPost.title,
+                subTitle: latestPost.subTitle,
+                article: latestPost.article,
+                date: latestPost.date,
+                imageAddress: latestPost.imageAddress,
+                stackOrder: latestPost.stackOrder
+            });
+            const creationRes = await MainPost.create(newMainPost);
+            const deletionRes = await Post.deleteOne({ _id: `${idOfNormalPost}` });
+            return {
+                creationRes: creationRes,
+                deletionRes: deletionRes
+            };
+        }
+    } catch (err) {
+        console.log(err.message);
     }
 }
 
